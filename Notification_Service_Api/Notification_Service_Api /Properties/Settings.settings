@@ -1,0 +1,22 @@
+﻿<?xml version='1.0' encoding='utf-8'?>
+<SettingsFile xmlns="http://schemas.microsoft.com/VisualStudio/2004/01/settings" CurrentProfile="(Default)" GeneratedClassNamespace="SQNotificationService.Properties" GeneratedClassName="Settings">
+  <Profiles />
+  <Settings>
+    <Setting Name="LoggingConnectionString" Type="(Connection string)" Scope="Application">
+      <DesignTimeValue Profile="(Default)">&lt;?xml version="1.0" encoding="utf-16"?&gt;
+&lt;SerializableConnectionString xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema"&gt;
+  &lt;ConnectionString&gt;Data Source=(localdb)\v11.0;Initial Catalog=notification_service_logging;Persist Security Info=True;User ID="{your password here}";Password="{your password here}";Connect Timeout=30;Encrypt=False&lt;/ConnectionString&gt;
+&lt;/SerializableConnectionString&gt;</DesignTimeValue>
+      <Value Profile="(Default)">Data Source=(localdb)\v11.0;Initial Catalog=solar_mobile_logging;Persist Security Info=True;User ID="{your password here}";Password="{your password here}";Connect Timeout=30;Encrypt=False</Value>
+    </Setting>
+    <Setting Name="NotificationServiceDbContext" Type="(Connection string)" Scope="Application">
+      <DesignTimeValue Profile="(Default)">&lt;?xml version="1.0" encoding="utf-16"?&gt;
+&lt;SerializableConnectionString xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema"&gt;
+  &lt;ConnectionString&gt;metadata=res://*/Models.Database.NotificationServiceModel.csdl|res://*/Models.Database.NotificationServiceModel.ssdl|res://*/Models.Database.NotificationServiceModel.msl;provider=System.Data.SqlClient;provider connection string=&amp;amp;quot;data source=Nahaelem\MSSQLSERVER1;initial catalog=notification_service_dev;integrated security=True;multipleactiveresultsets=True;application name=EntityFramework&amp;amp;quot;"
+      providerName="System.Data.EntityClient" &lt;/ConnectionString&gt;
+&lt;/SerializableConnectionString&gt;</DesignTimeValue>
+      <Value Profile="(Default)">metadata=res://*/Models.Database.NotificationServiceModel.csdl|res://*/Models.Database.NotificationServiceModel.ssdl|res://*/Models.Database.NotificationServiceModel.msl;provider=System.Data.SqlClient;provider connection string=&amp;quot;data source=Nahaelem\MSSQLSERVER1;initial catalog=notification_service_dev;integrated security=True;multipleactiveresultsets=True;application name=EntityFramework&amp;quot;"
+      providerName="System.Data.EntityClient" </Value>
+    </Setting>
+  </Settings>
+</SettingsFile>

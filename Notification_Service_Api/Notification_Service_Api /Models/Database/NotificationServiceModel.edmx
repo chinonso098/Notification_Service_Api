@@ -1,0 +1,365 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<edmx:Edmx Version="3.0" xmlns:edmx="http://schemas.microsoft.com/ado/2009/11/edmx">
+  <!-- EF Runtime content -->
+  <edmx:Runtime>
+    <!-- SSDL content -->
+    <edmx:StorageModels>
+      <Schema Namespace="NotificationServiceModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012.Azure" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+        <EntityType Name="NSMessageStatus">
+          <Key>
+            <PropertyRef Name="MsgSid" />
+          </Key>
+          <Property Name="MsgSid" Type="nvarchar" MaxLength="40" Nullable="false" />
+          <Property Name="ExternalReferenceID" Type="nvarchar" MaxLength="11" Nullable="false" />
+          <Property Name="MessageStatus" Type="nvarchar" MaxLength="15" Nullable="false" />
+          <Property Name="ErrorCode" Type="nvarchar" MaxLength="10" />
+          <Property Name="ErrorMessage" Type="nvarchar" MaxLength="50" />
+          <Property Name="ErrorDescription" Type="nvarchar" MaxLength="700" />
+          <Property Name="ModifiedAt" Type="datetime" />
+        </EntityType>
+        <EntityType Name="NSNotification">
+          <Key>
+            <PropertyRef Name="ExternalReferenceID" />
+          </Key>
+          <Property Name="ExternalReferenceID" Type="nvarchar" MaxLength="11" Nullable="false" />
+          <Property Name="MessageID" Type="int" Nullable="false" />
+          <Property Name="MessageTitle" Type="nvarchar" MaxLength="100" Nullable="false" />
+          <Property Name="Receiver" Type="nvarchar" MaxLength="500" Nullable="false" />
+          <Property Name="MessageBody" Type="nvarchar" MaxLength="4000" Nullable="false" />
+          <Property Name="DeliveryType" Type="nvarchar" MaxLength="10" Nullable="false" />
+          <Property Name="ResponseNeeded" Type="bit" Nullable="false" />
+          <Property Name="ErrorMessage" Type="nvarchar" MaxLength="4000" />
+          <Property Name="EndsAt" Type="datetime" />
+          <Property Name="CreatedAt" Type="datetime" Nullable="false" />
+        </EntityType>
+        <EntityType Name="NSResponse">
+          <Key>
+            <PropertyRef Name="ExternalReferenceID" />
+          </Key>
+          <Property Name="ExternalReferenceID" Type="nvarchar" MaxLength="11" Nullable="false" />
+          <Property Name="ResponderInfo" Type="nvarchar" MaxLength="30" Nullable="false" />
+          <Property Name="Response" Type="bit" Nullable="false" />
+          <Property Name="RespondedAt" Type="datetime" Nullable="false" />
+        </EntityType>
+        <EntityType Name="NSResponseValue">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="ExternalReferenceID" Type="nvarchar" MaxLength="11" Nullable="false" />
+          <Property Name="PhoneNumber" Type="nvarchar" MaxLength="13" Nullable="false" />
+          <Property Name="ResponseCode" Type="nvarchar" MaxLength="4" Nullable="false" />
+          <Property Name="ResponseCodeValue" Type="nvarchar" MaxLength="2" Nullable="false" />
+        </EntityType>
+        <EntityType Name="NSSentSmsMessage">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="ExternalReferenceID" Type="nvarchar" MaxLength="11" Nullable="false" />
+          <Property Name="MsgSid" Type="nvarchar" MaxLength="40" Nullable="false" />
+          <Property Name="PhoneNumber" Type="nvarchar" MaxLength="13" Nullable="false" />
+          <Property Name="SentAt" Type="datetime" Nullable="false" />
+        </EntityType>
+        <Association Name="FK_NSMessageStatus_NSNotification">
+          <End Role="NSNotification" Type="Self.NSNotification" Multiplicity="1" />
+          <End Role="NSMessageStatus" Type="Self.NSMessageStatus" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="NSNotification">
+              <PropertyRef Name="ExternalReferenceID" />
+            </Principal>
+            <Dependent Role="NSMessageStatus">
+              <PropertyRef Name="ExternalReferenceID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_NSResponse_NSNotification">
+          <End Role="NSNotification" Type="Self.NSNotification" Multiplicity="1" />
+          <End Role="NSResponse" Type="Self.NSResponse" Multiplicity="0..1" />
+          <ReferentialConstraint>
+            <Principal Role="NSNotification">
+              <PropertyRef Name="ExternalReferenceID" />
+            </Principal>
+            <Dependent Role="NSResponse">
+              <PropertyRef Name="ExternalReferenceID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_NSResponseValue_NSNotification">
+          <End Role="NSNotification" Type="Self.NSNotification" Multiplicity="1" />
+          <End Role="NSResponseValue" Type="Self.NSResponseValue" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="NSNotification">
+              <PropertyRef Name="ExternalReferenceID" />
+            </Principal>
+            <Dependent Role="NSResponseValue">
+              <PropertyRef Name="ExternalReferenceID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_NSSentSmsMessage_NSNotification">
+          <End Role="NSNotification" Type="Self.NSNotification" Multiplicity="1" />
+          <End Role="NSSentSmsMessage" Type="Self.NSSentSmsMessage" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="NSNotification">
+              <PropertyRef Name="ExternalReferenceID" />
+            </Principal>
+            <Dependent Role="NSSentSmsMessage">
+              <PropertyRef Name="ExternalReferenceID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <EntityContainer Name="NotificationServiceModelStoreContainer">
+          <EntitySet Name="NSMessageStatus" EntityType="Self.NSMessageStatus" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="NSNotification" EntityType="Self.NSNotification" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="NSResponse" EntityType="Self.NSResponse" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="NSResponseValue" EntityType="Self.NSResponseValue" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="NSSentSmsMessage" EntityType="Self.NSSentSmsMessage" Schema="dbo" store:Type="Tables" />
+          <AssociationSet Name="FK_NSMessageStatus_NSNotification" Association="Self.FK_NSMessageStatus_NSNotification">
+            <End Role="NSNotification" EntitySet="NSNotification" />
+            <End Role="NSMessageStatus" EntitySet="NSMessageStatus" />
+          </AssociationSet>
+          <AssociationSet Name="FK_NSResponse_NSNotification" Association="Self.FK_NSResponse_NSNotification">
+            <End Role="NSNotification" EntitySet="NSNotification" />
+            <End Role="NSResponse" EntitySet="NSResponse" />
+          </AssociationSet>
+          <AssociationSet Name="FK_NSResponseValue_NSNotification" Association="Self.FK_NSResponseValue_NSNotification">
+            <End Role="NSNotification" EntitySet="NSNotification" />
+            <End Role="NSResponseValue" EntitySet="NSResponseValue" />
+          </AssociationSet>
+          <AssociationSet Name="FK_NSSentSmsMessage_NSNotification" Association="Self.FK_NSSentSmsMessage_NSNotification">
+            <End Role="NSNotification" EntitySet="NSNotification" />
+            <End Role="NSSentSmsMessage" EntitySet="NSSentSmsMessage" />
+          </AssociationSet>
+        </EntityContainer>
+      </Schema>
+    </edmx:StorageModels>
+    <!-- CSDL content -->
+    <edmx:ConceptualModels>
+      <Schema Namespace="NotificationServiceModel" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
+        <EntityType Name="NSMessageStatu">
+          <Key>
+            <PropertyRef Name="MsgSid" />
+          </Key>
+          <Property Name="MsgSid" Type="String" MaxLength="40" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="ExternalReferenceID" Type="String" MaxLength="11" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="MessageStatus" Type="String" MaxLength="15" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="ErrorCode" Type="String" MaxLength="10" FixedLength="false" Unicode="true" />
+          <Property Name="ErrorMessage" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="ErrorDescription" Type="String" MaxLength="700" FixedLength="false" Unicode="true" />
+          <Property Name="ModifiedAt" Type="DateTime" Precision="3" />
+          <NavigationProperty Name="NSNotification" Relationship="Self.FK_NSMessageStatus_NSNotification" FromRole="NSMessageStatus" ToRole="NSNotification" />
+        </EntityType>
+        <EntityType Name="NSNotification">
+          <Key>
+            <PropertyRef Name="ExternalReferenceID" />
+          </Key>
+          <Property Name="ExternalReferenceID" Type="String" MaxLength="11" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="MessageID" Type="Int32" Nullable="false" />
+          <Property Name="MessageTitle" Type="String" MaxLength="100" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="Receiver" Type="String" MaxLength="500" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="MessageBody" Type="String" MaxLength="4000" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="DeliveryType" Type="String" MaxLength="10" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="ResponseNeeded" Type="Boolean" Nullable="false" />
+          <Property Name="ErrorMessage" Type="String" MaxLength="4000" FixedLength="false" Unicode="true" />
+          <Property Name="EndsAt" Type="DateTime" Precision="3" />
+          <Property Name="CreatedAt" Type="DateTime" Nullable="false" Precision="3" />
+          <NavigationProperty Name="NSMessageStatus" Relationship="Self.FK_NSMessageStatus_NSNotification" FromRole="NSNotification" ToRole="NSMessageStatus" />
+          <NavigationProperty Name="NSResponse" Relationship="Self.FK_NSResponse_NSNotification" FromRole="NSNotification" ToRole="NSResponse" />
+          <NavigationProperty Name="NSResponseValues" Relationship="Self.FK_NSResponseValue_NSNotification" FromRole="NSNotification" ToRole="NSResponseValue" />
+          <NavigationProperty Name="NSSentSmsMessages" Relationship="Self.FK_NSSentSmsMessage_NSNotification" FromRole="NSNotification" ToRole="NSSentSmsMessage" />
+        </EntityType>
+        <EntityType Name="NSResponse">
+          <Key>
+            <PropertyRef Name="ExternalReferenceID" />
+          </Key>
+          <Property Name="ExternalReferenceID" Type="String" MaxLength="11" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="ResponderInfo" Type="String" MaxLength="30" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="Response" Type="Boolean" Nullable="false" />
+          <Property Name="RespondedAt" Type="DateTime" Nullable="false" Precision="3" />
+          <NavigationProperty Name="NSNotification" Relationship="Self.FK_NSResponse_NSNotification" FromRole="NSResponse" ToRole="NSNotification" />
+        </EntityType>
+        <EntityType Name="NSResponseValue">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="ExternalReferenceID" Type="String" MaxLength="11" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="PhoneNumber" Type="String" MaxLength="13" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="ResponseCode" Type="String" MaxLength="4" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="ResponseCodeValue" Type="String" MaxLength="2" FixedLength="false" Unicode="true" Nullable="false" />
+          <NavigationProperty Name="NSNotification" Relationship="Self.FK_NSResponseValue_NSNotification" FromRole="NSResponseValue" ToRole="NSNotification" />
+        </EntityType>
+        <EntityType Name="NSSentSmsMessage">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="ExternalReferenceID" Type="String" MaxLength="11" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="MsgSid" Type="String" MaxLength="40" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="PhoneNumber" Type="String" MaxLength="13" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="SentAt" Type="DateTime" Nullable="false" Precision="3" />
+          <NavigationProperty Name="NSNotification" Relationship="Self.FK_NSSentSmsMessage_NSNotification" FromRole="NSSentSmsMessage" ToRole="NSNotification" />
+        </EntityType>
+        <Association Name="FK_NSMessageStatus_NSNotification">
+          <End Role="NSNotification" Type="Self.NSNotification" Multiplicity="1" />
+          <End Role="NSMessageStatus" Type="Self.NSMessageStatu" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="NSNotification">
+              <PropertyRef Name="ExternalReferenceID" />
+            </Principal>
+            <Dependent Role="NSMessageStatus">
+              <PropertyRef Name="ExternalReferenceID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_NSResponse_NSNotification">
+          <End Role="NSNotification" Type="Self.NSNotification" Multiplicity="1" />
+          <End Role="NSResponse" Type="Self.NSResponse" Multiplicity="0..1" />
+          <ReferentialConstraint>
+            <Principal Role="NSNotification">
+              <PropertyRef Name="ExternalReferenceID" />
+            </Principal>
+            <Dependent Role="NSResponse">
+              <PropertyRef Name="ExternalReferenceID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_NSResponseValue_NSNotification">
+          <End Role="NSNotification" Type="Self.NSNotification" Multiplicity="1" />
+          <End Role="NSResponseValue" Type="Self.NSResponseValue" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="NSNotification">
+              <PropertyRef Name="ExternalReferenceID" />
+            </Principal>
+            <Dependent Role="NSResponseValue">
+              <PropertyRef Name="ExternalReferenceID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_NSSentSmsMessage_NSNotification">
+          <End Role="NSNotification" Type="Self.NSNotification" Multiplicity="1" />
+          <End Role="NSSentSmsMessage" Type="Self.NSSentSmsMessage" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="NSNotification">
+              <PropertyRef Name="ExternalReferenceID" />
+            </Principal>
+            <Dependent Role="NSSentSmsMessage">
+              <PropertyRef Name="ExternalReferenceID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <EntityContainer Name="NotificationServiceDbContext" annotation:LazyLoadingEnabled="true">
+          <EntitySet Name="NSMessageStatus" EntityType="Self.NSMessageStatu" />
+          <EntitySet Name="NSNotifications" EntityType="Self.NSNotification" />
+          <EntitySet Name="NSResponses" EntityType="Self.NSResponse" />
+          <EntitySet Name="NSResponseValues" EntityType="Self.NSResponseValue" />
+          <EntitySet Name="NSSentSmsMessages" EntityType="Self.NSSentSmsMessage" />
+          <AssociationSet Name="FK_NSMessageStatus_NSNotification" Association="Self.FK_NSMessageStatus_NSNotification">
+            <End Role="NSNotification" EntitySet="NSNotifications" />
+            <End Role="NSMessageStatus" EntitySet="NSMessageStatus" />
+          </AssociationSet>
+          <AssociationSet Name="FK_NSResponse_NSNotification" Association="Self.FK_NSResponse_NSNotification">
+            <End Role="NSNotification" EntitySet="NSNotifications" />
+            <End Role="NSResponse" EntitySet="NSResponses" />
+          </AssociationSet>
+          <AssociationSet Name="FK_NSResponseValue_NSNotification" Association="Self.FK_NSResponseValue_NSNotification">
+            <End Role="NSNotification" EntitySet="NSNotifications" />
+            <End Role="NSResponseValue" EntitySet="NSResponseValues" />
+          </AssociationSet>
+          <AssociationSet Name="FK_NSSentSmsMessage_NSNotification" Association="Self.FK_NSSentSmsMessage_NSNotification">
+            <End Role="NSNotification" EntitySet="NSNotifications" />
+            <End Role="NSSentSmsMessage" EntitySet="NSSentSmsMessages" />
+          </AssociationSet>
+        </EntityContainer>
+      </Schema>
+    </edmx:ConceptualModels>
+    <!-- C-S mapping content -->
+    <edmx:Mappings>
+      <Mapping Space="C-S" xmlns="http://schemas.microsoft.com/ado/2009/11/mapping/cs">
+        <EntityContainerMapping StorageEntityContainer="NotificationServiceModelStoreContainer" CdmEntityContainer="NotificationServiceDbContext">
+          <EntitySetMapping Name="NSMessageStatus">
+            <EntityTypeMapping TypeName="NotificationServiceModel.NSMessageStatu">
+              <MappingFragment StoreEntitySet="NSMessageStatus">
+                <ScalarProperty Name="MsgSid" ColumnName="MsgSid" />
+                <ScalarProperty Name="ExternalReferenceID" ColumnName="ExternalReferenceID" />
+                <ScalarProperty Name="MessageStatus" ColumnName="MessageStatus" />
+                <ScalarProperty Name="ErrorCode" ColumnName="ErrorCode" />
+                <ScalarProperty Name="ErrorMessage" ColumnName="ErrorMessage" />
+                <ScalarProperty Name="ErrorDescription" ColumnName="ErrorDescription" />
+                <ScalarProperty Name="ModifiedAt" ColumnName="ModifiedAt" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="NSNotifications">
+            <EntityTypeMapping TypeName="NotificationServiceModel.NSNotification">
+              <MappingFragment StoreEntitySet="NSNotification">
+                <ScalarProperty Name="ExternalReferenceID" ColumnName="ExternalReferenceID" />
+                <ScalarProperty Name="MessageID" ColumnName="MessageID" />
+                <ScalarProperty Name="MessageTitle" ColumnName="MessageTitle" />
+                <ScalarProperty Name="Receiver" ColumnName="Receiver" />
+                <ScalarProperty Name="MessageBody" ColumnName="MessageBody" />
+                <ScalarProperty Name="DeliveryType" ColumnName="DeliveryType" />
+                <ScalarProperty Name="ResponseNeeded" ColumnName="ResponseNeeded" />
+                <ScalarProperty Name="ErrorMessage" ColumnName="ErrorMessage" />
+                <ScalarProperty Name="EndsAt" ColumnName="EndsAt" />
+                <ScalarProperty Name="CreatedAt" ColumnName="CreatedAt" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="NSResponses">
+            <EntityTypeMapping TypeName="NotificationServiceModel.NSResponse">
+              <MappingFragment StoreEntitySet="NSResponse">
+                <ScalarProperty Name="ExternalReferenceID" ColumnName="ExternalReferenceID" />
+                <ScalarProperty Name="ResponderInfo" ColumnName="ResponderInfo" />
+                <ScalarProperty Name="Response" ColumnName="Response" />
+                <ScalarProperty Name="RespondedAt" ColumnName="RespondedAt" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="NSResponseValues">
+            <EntityTypeMapping TypeName="NotificationServiceModel.NSResponseValue">
+              <MappingFragment StoreEntitySet="NSResponseValue">
+                <ScalarProperty Name="ID" ColumnName="ID" />
+                <ScalarProperty Name="ExternalReferenceID" ColumnName="ExternalReferenceID" />
+                <ScalarProperty Name="PhoneNumber" ColumnName="PhoneNumber" />
+                <ScalarProperty Name="ResponseCode" ColumnName="ResponseCode" />
+                <ScalarProperty Name="ResponseCodeValue" ColumnName="ResponseCodeValue" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="NSSentSmsMessages">
+            <EntityTypeMapping TypeName="NotificationServiceModel.NSSentSmsMessage">
+              <MappingFragment StoreEntitySet="NSSentSmsMessage">
+                <ScalarProperty Name="ID" ColumnName="ID" />
+                <ScalarProperty Name="ExternalReferenceID" ColumnName="ExternalReferenceID" />
+                <ScalarProperty Name="MsgSid" ColumnName="MsgSid" />
+                <ScalarProperty Name="PhoneNumber" ColumnName="PhoneNumber" />
+                <ScalarProperty Name="SentAt" ColumnName="SentAt" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+        </EntityContainerMapping>
+      </Mapping>
+    </edmx:Mappings>
+  </edmx:Runtime>
+  <!-- EF Designer content (DO NOT EDIT MANUALLY BELOW HERE) -->
+  <Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
+    <Connection>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="MetadataArtifactProcessing" Value="EmbedInOutputAssembly" />
+      </DesignerInfoPropertySet>
+    </Connection>
+    <Options>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="ValidateOnBuild" Value="true" />
+        <DesignerProperty Name="EnablePluralization" Value="true" />
+        <DesignerProperty Name="IncludeForeignKeysInModel" Value="true" />
+        <DesignerProperty Name="UseLegacyProvider" Value="false" />
+        <DesignerProperty Name="CodeGenerationStrategy" Value="None" />
+      </DesignerInfoPropertySet>
+    </Options>
+    <!-- Diagram content (shape and connector positions) -->
+    <Diagrams></Diagrams>
+  </Designer>
+</edmx:Edmx>
